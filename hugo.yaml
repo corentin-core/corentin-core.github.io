@@ -1,0 +1,48 @@
+baseURL: "https://corentin-core.github.io/"
+title: "Corentin Corgié"
+languageCode: "en"
+theme: "PaperMod"
+pagination:
+  pagerSize: 10
+
+params:
+  env: production
+  description: "Software engineer. Writing about side projects, developer tools, and lessons learned."
+  ShowReadingTime: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowWordCount: false
+  ShowRssButtonInSectionTermList: true
+  UseHugoToc: true
+  comments: false
+
+  homeInfoParams:
+    Title: "Hi there"
+    Content: "Software engineer writing about side projects, developer tools, and lessons learned along the way."
+
+  socialIcons:
+    - name: github
+      url: "https://github.com/corentin-core"
+    - name: linkedin
+      url: "https://www.linkedin.com/in/corentin-music/"
+
+menu:
+  main:
+    - name: Posts
+      url: /posts/
+      weight: 1
+    - name: Tags
+      url: /tags/
+      weight: 2
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+markup:
+  highlight:
+    style: monokai
+    lineNos: false
