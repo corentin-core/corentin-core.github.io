@@ -42,6 +42,11 @@ outputs:
     - RSS
     - JSON
 
+minify:
+  tdewolff:
+    html:
+      keepWhitespace: true
+
 markup:
   highlight:
     style: monokai
