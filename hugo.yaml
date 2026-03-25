@@ -46,3 +46,6 @@ markup:
   highlight:
     style: monokai
     lineNos: false
+  goldmark:
+    renderer:
+      unsafe: true
