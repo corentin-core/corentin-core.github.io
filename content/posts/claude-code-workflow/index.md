@@ -1,12 +1,12 @@
 ---
-title: "I spend more time configuring my AI than writing code. Here's why."
+title: "I spend more time writing instructions for my AI than writing code. It changed how I work."
 date: 2026-03-25
 summary: "How I turned Claude Code from an eager intern into a real dev partner — layer by layer, failure by failure."
 tags: ["ai-tools", "claude-code", "workflow", "developer-experience"]
 draft: false
 ---
 
-*I spend more time configuring my AI than writing code. Here's why.*
+*I spend more time writing instructions for my AI than writing code. It changed how I work.*
 
 ---
 
@@ -209,7 +209,7 @@ The code was still getting written — just not by me, most of the time.
 
 So what *is* the job now? For me: you become the architect, the reviewer, and the quality gate. You define what "good" looks like, and you make sure it gets enforced — consistently, across projects, over time.
 
-That's why I spend more time configuring than coding. And my workflow has never been smoother.
+That's why I spend more time writing instructions than writing code. It changed how I work — and I'm not going back.
 
 ---
 
