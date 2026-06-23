@@ -20,13 +20,13 @@ Turns out yes. This post is the story of how I got there in [ruxe](https://githu
 
 Redux is a state management pattern. It got famous in frontend JavaScript but the shape is more general; any system where state changes through discrete events fits the model.
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     User([User code]) -->|dispatch event| Store
     Store -->|state + event| Reducer
     Reducer -->|new state| Store
     Store -->|read| User
-```
+{{< /mermaid >}}
 
 Three rules make Redux what it is.
 
@@ -48,12 +48,12 @@ We worked around it. We cache reads and trigger the reduction at a coarser frequ
 
 Profiling told us where the time was actually spent: the reducer phase. The plant has many independent subsystems. Solar, battery, meter, grid controller, and so on. Each subsystem holds a *slice* of the global state, and each has its own reducer that only touches its slice.
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     Event[Event] --> R1[Solar reducer] --> S1[Solar slice]
     Event --> R2[Battery reducer] --> S2[Battery slice]
     Event --> R3[Meter reducer] --> S3[Meter slice]
-```
+{{< /mermaid >}}
 
 Here's the observation that started everything: the reducers are independent. Solar's reducer never touches the battery slice. Battery's reducer never touches the meter slice. Each event is a single pass through all of them.
 
@@ -77,7 +77,7 @@ A **slice** is a sub-field of the state. If your state holds a `counter`, a `use
 
 A **slice reducer** is a reducer that only sees its slice. It cannot touch other slices. The type system forbids it: the function signature exposes only `&Slice`, nothing else.
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     subgraph State
         SA[counter]
@@ -87,11 +87,11 @@ flowchart LR
     R1[CounterReducer] -.touches.-> SA
     R2[UserReducer] -.touches.-> SB
     R3[NotificationsReducer] -.touches.-> SC
-```
+{{< /mermaid >}}
 
 The property we want is **disjointness**: for any pair of slice reducers in our setup, they target different slices. No two reducers ever touch the same slice.
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     subgraph Disjoint["✅ Disjoint — safe to parallelize"]
         D1[Reducer A] -.-> SA1[Slice A]
@@ -101,7 +101,7 @@ flowchart LR
         N1[Reducer A] -.-> SX[Slice X]
         N2[Reducer B] -.-> SX
     end
-```
+{{< /mermaid >}}
 
 Disjointness is necessary and sufficient for safe parallel execution. If it holds, parallel is sound. If it doesn't, parallel races.
 
@@ -153,7 +153,7 @@ The compiler:
 error: expected one of `!`, `(`, `+`, `::`, `:`, `<`, `==`, or `=`, found `!=`
 ```
 
-![](meme1.jpeg)
+<img src="meme1.jpeg" alt="" style="max-width: 520px;">
 
 Stable Rust has no syntax for type inequality in bounds. No `H != T`. No way to write "this trait is implemented if that other one is *not* implemented". The unstable feature `negative_impls` has existed for years but stays parked behind coherence concerns. Don't hold your breath.
 
@@ -219,12 +219,12 @@ HList!(i32, String, f64)
 
 Visually it's a nested doll:
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     L1[HCons] --> H1[i32] & T1[HCons]
     T1 --> H2[String] & T2[HCons]
     T2 --> H3[f64] & T3[HNil]
-```
+{{< /mermaid >}}
 
 This structure is what tuples can't be. Walkable by the compiler via recursive trait impls. Why? Every HList is either `HNil` (terminator, match for the base case) or `HCons<H, T>` where `T` is itself an HList (match for the recursive step).
 
@@ -253,7 +253,7 @@ Adapt this to my problem. I have a state's slice list (declared by the user, som
 
 I walk the slice list. For each slice, I look up the reducer in the reducer HList whose `Slice` associated type matches that slice. Sculptor-flavored lookup, but matching on an associated type instead of a concrete type.
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     subgraph Slices
         S1[CounterSlice]
@@ -268,11 +268,11 @@ flowchart LR
     S1 -.match.-> R1
     S2 -.match.-> R2
     S3 -.match.-> R3
-```
+{{< /mermaid >}}
 
 The failure modes I want fall out of the resolver naturally.
 
-```mermaid
+{{< mermaid >}}
 flowchart TB
     subgraph Happy["✅ Happy path — unique match"]
         direction LR
@@ -294,7 +294,7 @@ flowchart TB
 
     Happy ~~~ Duplicate
     Duplicate ~~~ Missing
-```
+{{< /mermaid >}}
 
 I never wrote a single check for "are there duplicates?" or "is everything covered?". The resolver did it because it does it for every other lookup. I just had to phrase the question in a way it could answer.
 
@@ -332,12 +332,12 @@ impl ... for HCons<...> { ... }     // Index = There<I>   (recurse, with inner i
 
 In our case: `Here` plays the role of zero. `There<I>` plays the role of successor, wrapping a smaller numeral inside. `There<Here>` is 1, `There<There<Here>>` is 2, and so on. They encode the path the compiler took to find the match — how many `tail` hops did it take before the head matched the target slice.
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     A[Here = 0] -.successor.-> B["There&lt;Here&gt; = 1"]
     B -.successor.-> C["There&lt;There&lt;Here&gt;&gt; = 2"]
     C -.successor.-> D[...]
-```
+{{< /mermaid >}}
 
 The user never writes these. The compiler infers them during trait resolution. They exist to disambiguate impls that would otherwise overlap.
 
