@@ -107,3 +107,5 @@ The real product was never the app. It was what I became while building it.
 ---
 
 *The project is open source at [github.com/corentin-core/budget-forecaster](https://github.com/corentin-core/budget-forecaster). If you've got a side project gathering dust, maybe it just needs a different kind of push.*
+
+*Note on authorship: drafted with Claude (Anthropic) and rewritten across multiple passes. The decisions and the journey itself are mine.*

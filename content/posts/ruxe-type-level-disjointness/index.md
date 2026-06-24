@@ -429,3 +429,5 @@ But the compiler now refuses to assemble code that would have raced, which is ex
 ---
 
 *Source code: [ruxe on GitHub](https://github.com/corentin-core/ruxe). Pull request that landed this: [#26](https://github.com/corentin-core/ruxe/pull/26).*
+
+*Note on authorship: drafted with Claude (Anthropic) and rewritten across multiple passes. The decisions and the journey itself are mine.*

@@ -214,3 +214,5 @@ That's why I spend more time writing instructions than writing code. It changed 
 ---
 
 *This is one way to work with AI. I'm exploring others — including flipping the model entirely and using it to learn rather than produce. More on that when I've lived it enough to write about it honestly.*
+
+*Note on authorship: drafted with Claude (Anthropic) and rewritten across multiple passes. The decisions and the journey itself are mine.*
