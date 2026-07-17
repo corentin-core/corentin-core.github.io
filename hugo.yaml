@@ -15,7 +15,7 @@ params:
   ShowWordCount: false
   ShowRssButtonInSectionTermList: true
   UseHugoToc: true
-  comments: false
+  comments: true
 
   homeInfoParams:
     Title: "Hi there"
