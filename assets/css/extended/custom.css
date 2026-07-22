@@ -4,3 +4,81 @@
   max-width: 320px;
   border-radius: 8px;
 }
+
+/* Sticky side table of contents.
+   Lives in the right gutter beside the centered 720px column, so it never
+   shifts the content. Hidden below 1280px, where the gutter is too narrow. */
+#toc-side {
+  display: none;
+}
+
+@media screen and (min-width: 1280px) {
+  /* Desktop: the sidebar replaces PaperMod's inline collapsible ToC. */
+  .post-single .toc {
+    display: none;
+  }
+
+  #toc-side {
+    display: block;
+    position: fixed;
+    top: 120px;
+    /* half the viewport, past half the content column, plus a small gap */
+    left: calc(50% + 360px + 32px);
+    width: 220px;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .toc-side-title {
+    margin: 0 0 0.6em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--secondary);
+  }
+
+  #toc-side #TableOfContents ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 2px solid var(--tertiary);
+  }
+
+  #toc-side #TableOfContents ul ul {
+    border-left: none;
+    padding-left: 0.9em;
+  }
+
+  #toc-side #TableOfContents li {
+    margin: 0;
+  }
+
+  #toc-side #TableOfContents a {
+    display: block;
+    padding: 0.25em 0 0.25em 0.9em;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    color: var(--secondary);
+    text-decoration: none;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  #toc-side #TableOfContents a:hover {
+    color: var(--primary);
+  }
+
+  #toc-side #TableOfContents a.active {
+    color: var(--primary);
+    font-weight: 600;
+    border-left-color: var(--primary);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
