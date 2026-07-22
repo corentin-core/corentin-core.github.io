@@ -6,7 +6,49 @@
 </style>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+
+  // Diagrams follow the page palette (green phosphor / green paper) and
+  // re-render when the reader flips the theme toggle.
+  const blocks = [...document.querySelectorAll('pre.mermaid')];
+  blocks.forEach((el) => { el.dataset.src = el.textContent; });
+
+  function themeConfig() {
+    const root = document.documentElement;
+    const dark = root.dataset.theme === 'dark'
+      || (!root.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
+    const vars = dark
+      ? { mainBkg: '#16231a', primaryColor: '#16231a', nodeBorder: '#4ee36e',
+          primaryBorderColor: '#4ee36e', clusterBkg: 'transparent', clusterBorder: '#2f7d47',
+          primaryTextColor: '#cee8d2', textColor: '#cee8d2', titleColor: '#cee8d2',
+          lineColor: '#4ee36e', edgeLabelBackground: '#0a0f0b' }
+      : { mainBkg: '#ffffff', primaryColor: '#ffffff', nodeBorder: '#1a7f37',
+          primaryBorderColor: '#1a7f37', clusterBkg: 'transparent', clusterBorder: '#1a7f37',
+          primaryTextColor: '#16281c', textColor: '#16281c', titleColor: '#16281c',
+          lineColor: '#1a7f37', edgeLabelBackground: '#fafcf8' };
+    return {
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        background: 'transparent',
+        fontFamily: 'ui-monospace, "JetBrains Mono", monospace',
+        ...vars,
+      },
+    };
+  }
+
+  async function renderMermaid() {
+    if (blocks.length === 0) return;
+    // Restore the raw graph as literal text — innerHTML would let generics like
+    // `<H, T>` in labels be parsed as HTML tags and corrupt the diagram source.
+    blocks.forEach((el) => { el.removeAttribute('data-processed'); el.textContent = el.dataset.src; });
+    mermaid.initialize(themeConfig());
+    await mermaid.run({ nodes: blocks });
+  }
+
+  renderMermaid();
+
+  const toggle = document.getElementById('theme-toggle');
+  if (toggle) toggle.addEventListener('click', () => setTimeout(renderMermaid, 0));
 </script>
 
 <script>
