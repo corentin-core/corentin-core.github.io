@@ -19,7 +19,7 @@ params:
   comments: true
 
   homeInfoParams:
-    Title: "Hi there"
+    Title: "corentin@blog:~$ whoami"
     Content: "Software engineer writing about side projects, developer tools, and lessons learned along the way."
 
   socialIcons:

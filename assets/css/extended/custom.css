@@ -1,3 +1,332 @@
+/* =========================================================================
+   Fallout-style terminal reskin — a CSS layer over PaperMod.
+   Green phosphor identity in both modes; the CRT treatment (scanlines, glow,
+   green-tinted background) is dark-mode only so light mode stays readable.
+   ========================================================================= */
+
+/* Self-hosted JetBrains Mono so the terminal look is identical across OSes,
+   instead of falling back to whatever monospace the visitor happens to have. */
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin-400-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2");
+}
+
+:root {
+  --accent: #1a7f37;          /* readable green on white (light mode) */
+  --accent-soft: rgba(26, 127, 55, 0.15);
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo,
+    Consolas, "Liberation Mono", monospace;
+  /* Light mode: clean white with green accents. */
+  --theme: rgb(255, 255, 255);
+  --entry: rgb(249, 251, 247);   /* faint tint so cards read as panels on white */
+  --border: rgb(224, 232, 224);
+}
+
+:root[data-theme="dark"] {
+  --accent: #4ee36e;          /* phosphor green */
+  --accent-soft: rgba(78, 227, 110, 0.12);
+  --theme: rgb(10, 15, 11);   /* near-black, green-tinted */
+  --entry: rgb(16, 23, 18);
+  --primary: rgb(206, 232, 210);
+  --content: rgb(180, 214, 186);
+  --border: rgb(30, 48, 35);
+  --tertiary: rgb(34, 58, 41);
+  --code-block-bg: rgb(23, 33, 26);   /* lifted off the page so code stands out */
+  --code-bg: rgb(27, 38, 30);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #4ee36e;
+    --accent-soft: rgba(78, 227, 110, 0.12);
+    --theme: rgb(10, 15, 11);
+    --entry: rgb(16, 23, 18);
+    --primary: rgb(206, 232, 210);
+    --content: rgb(180, 214, 186);
+    --border: rgb(30, 48, 35);
+    --tertiary: rgb(34, 58, 41);
+    --code-block-bg: rgb(23, 33, 26);
+    --code-bg: rgb(27, 38, 30);
+  }
+}
+
+/* Full monospace, tuned for long-form comfort: generous line-height and a
+   touch of extra size so mono prose doesn't tire the eye over a 16-min read. */
+.post-content {
+  font-family: var(--mono);
+  line-height: 1.75;
+  /* Slightly larger glyphs keep the mono line to ~65 characters in the 720px
+     column — the comfortable measure for long-form reading. */
+  font-size: 18px;
+}
+
+.post-content p,
+.post-content li {
+  font-family: var(--mono);
+}
+
+/* Card summaries on the list/home pages. */
+.entry-content {
+  font-family: var(--mono);
+}
+
+.post-title,
+.page-header h1,
+.entry-header h1,
+.entry-header h2,
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4 {
+  font-family: var(--mono);
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--theme);
+}
+
+/* --- Header as a shell prompt --------------------------------------------- */
+.logo a {
+  font-family: var(--mono);
+}
+
+.logo a::before {
+  content: "~/";
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+/* Blinking block cursor after the site name. */
+.logo a::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.15em;
+  margin-right: 0.5em;   /* keep clear of the theme toggle */
+  vertical-align: -0.12em;
+  background: var(--accent);
+  animation: term-blink 1.1s step-end infinite;
+}
+
+#menu a {
+  font-family: var(--mono);
+}
+
+#menu a::before {
+  content: "> ";
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+#menu .active {
+  border-bottom-color: var(--accent);
+}
+
+@keyframes term-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo a::after {
+    animation: none;
+  }
+}
+
+/* --- Links, code, quotes -------------------------------------------------- */
+.post-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.post-content code {
+  color: var(--accent);
+}
+
+/* Framed code blocks, like a terminal pane with an accent title rule. */
+.post-content pre {
+  border: 1px solid var(--tertiary);
+  border-top: 2px solid var(--accent);
+  border-radius: 6px;
+}
+
+.post-content blockquote {
+  border-inline-start-color: var(--accent);
+}
+
+/* First-post highlight + tags pick up the accent. */
+.post-tags a,
+.entry-hint,
+.paginav a {
+  font-family: var(--mono);
+}
+
+/* --- CRT treatment: dark mode only ---------------------------------------- */
+:root[data-theme="dark"] .post-title,
+:root[data-theme="dark"] .entry-header h1,
+:root[data-theme="dark"] .entry-header h2,
+:root[data-theme="dark"] .logo a {
+  text-shadow: 0 0 6px rgba(78, 227, 110, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .post-title,
+  :root:not([data-theme="light"]) .entry-header h1,
+  :root:not([data-theme="light"]) .entry-header h2,
+  :root:not([data-theme="light"]) .logo a {
+    text-shadow: 0 0 6px rgba(78, 227, 110, 0.35);
+  }
+}
+
+/* Scanline overlay, drawn above content but click-through. */
+:root[data-theme="dark"] body::before,
+:root[data-theme="dark"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+:root[data-theme="dark"] body::before {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(78, 227, 110, 0.015) 0,
+    rgba(78, 227, 110, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  /* Keep scanlines off the reading column — only the side gutters glow. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0,
+    black calc(50% - 400px),
+    transparent calc(50% - 370px),
+    transparent calc(50% + 370px),
+    black calc(50% + 400px),
+    black 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    black 0,
+    black calc(50% - 400px),
+    transparent calc(50% - 370px),
+    transparent calc(50% + 370px),
+    black calc(50% + 400px),
+    black 100%
+  );
+}
+
+/* Corner vignette for the curved-glass feel. */
+:root[data-theme="dark"] body::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(78, 227, 110, 0.015) 0,
+      rgba(78, 227, 110, 0.015) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      black 0,
+      black calc(50% - 400px),
+      transparent calc(50% - 370px),
+      transparent calc(50% + 370px),
+      black calc(50% + 400px),
+      black 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      black 0,
+      black calc(50% - 400px),
+      transparent calc(50% - 370px),
+      transparent calc(50% + 370px),
+      black calc(50% + 400px),
+      black 100%
+    );
+  }
+
+  :root:not([data-theme="light"]) body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 60%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
+  }
+}
+
+/* --- Light mode: clean and light, green accents only (no background) ------ */
+:root[data-theme="light"] {
+  --secondary: rgb(82, 96, 84);   /* darker green-gray, clears WCAG AA */
+}
+
+:root[data-theme="light"] .post-entry,
+:root[data-theme="light"] .first-entry {
+  border-top: 2px solid var(--accent);
+}
+
+:root[data-theme="light"] .post-content h2 {
+  border-bottom: 1px solid var(--accent-soft);
+  padding-bottom: 0.2em;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --secondary: rgb(82, 96, 84);
+  }
+
+  :root:not([data-theme="dark"]) .post-entry,
+  :root:not([data-theme="dark"]) .first-entry {
+    border-top: 2px solid var(--accent);
+  }
+
+  :root:not([data-theme="dark"]) .post-content h2 {
+    border-bottom: 1px solid var(--accent-soft);
+    padding-bottom: 0.2em;
+  }
+}
+
 .post-content img {
   display: block;
   margin: 1.5em auto;
